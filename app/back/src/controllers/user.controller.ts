@@ -1,37 +1,72 @@
+/**
+ * CONTRÔLEUR DE GESTION DES UTILISATEURS
+ * 
+ * Ce contrôleur gère toutes les opérations CRUD et les requêtes complexes
+ * liées aux utilisateurs de l'application SkillSwap. Il fournit des endpoints
+ * pour la consultation, modification, suppression et recherche d'utilisateurs.
+ * 
+ * Fonctionnalités principales :
+ * - CRUD complet des utilisateurs (lecture, mise à jour, suppression)
+ * - Récupération des services associés à un utilisateur
+ * - Gestion des messages et avis utilisateurs
+ * - Recherche d'utilisateurs par compétences et localisation
+ * - Endpoints pour l'affichage de listes d'utilisateurs (random, récents, etc.)
+ * - Gestion de l'utilisateur actuellement connecté
+ * 
+ * Relations gérées :
+ * - User <-> Skills (many-to-many)
+ * - User <-> Services (one-to-many)
+ * - User <-> Messages (one-to-many)
+ * - User <-> Reviews (one-to-many)
+ * 
+ * Sécurité :
+ * - Validation des paramètres d'entrée
+ * - Gestion d'erreurs complète
+ * - Protection contre les injections SQL via Sequelize
+ * 
+ * @author Équipe SkillSwap
+ * @version 1.0.0
+ */
+
 import { Request, Response } from "express";
 import { User } from "../models/associations";
 import { Sequelize, QueryTypes } from "sequelize";
 import { getAllServicesForUser } from "../queries/service.queries";
 
+// Interface defining all user controller methods
 interface UserController {
-  getAllUsers: (req: Request, res: Response) => Promise<void>;
-  getOneUser: (req: Request, res: Response) => Promise<void>;
-  deleteUser: (req: Request, res: Response) => Promise<void>;
-  updateUser: (req: Request, res: Response) => Promise<void>;
-  getUserServices: (req: Request, res: Response) => Promise<void>;
-  getUserMessages: (req: Request, res: Response) => Promise<void>;
-  getUserReviews: (req: Request, res: Response) => Promise<void>;
-  getSixRandomUsers: (req: Request, res: Response) => Promise<void>;
-  getSixLatestUsers: (req: Request, res: Response) => Promise<void>;
-  getTenUsers: (req: Request, res: Response) => Promise<void>;
-  getUsersBySkillAndZipcode: (req: Request, res: Response) => Promise<void>;
-  getUsersServicesRaw: (req: Request, res: Response) => Promise<void>;
-  getCurrentUser: (req: Request, res: Response) => Promise<void>;
+  getAllUsers: (req: Request, res: Response) => Promise<void>; // Get all users with skills
+  getOneUser: (req: Request, res: Response) => Promise<void>; // Get single user by ID
+  deleteUser: (req: Request, res: Response) => Promise<void>; // Delete user account
+  updateUser: (req: Request, res: Response) => Promise<void>; // Update user information
+  getUserServices: (req: Request, res: Response) => Promise<void>; // Get user's services
+  getUserMessages: (req: Request, res: Response) => Promise<void>; // Get user's messages
+  getUserReviews: (req: Request, res: Response) => Promise<void>; // Get user's reviews
+  getSixRandomUsers: (req: Request, res: Response) => Promise<void>; // Get 6 random users for homepage
+  getSixLatestUsers: (req: Request, res: Response) => Promise<void>; // Get 6 newest users
+  getTenUsers: (req: Request, res: Response) => Promise<void>; // Get 10 users for listing
+  getUsersBySkillAndZipcode: (req: Request, res: Response) => Promise<void>; // Search by skill/location
+  getUsersServicesRaw: (req: Request, res: Response) => Promise<void>; // Raw SQL query for services
+  getCurrentUser: (req: Request, res: Response) => Promise<void>; // Get authenticated user data
 }
 
+// Implementation of user controller methods
 const userController: UserController = {
+  // Get all users with their associated skills
   getAllUsers: async (req: Request, res: Response) => {
     try {
+      // Fetch all users including their skills (many-to-many relation)
       const users = await User.findAll({
         include: [
           {
-            association: "skills",
-            attributes: ["name"],
-            through: { attributes: [] },
+            association: "skills", // Include skills association
+            attributes: ["name"], // Only get skill names
+            through: { attributes: [] }, // Exclude junction table attributes
           },
         ],
       });
 
+      // Check if any users were found
       if (!users || users.length === 0) {
         res.status(404).json({
           success: false,
@@ -40,6 +75,7 @@ const userController: UserController = {
         return;
       }
 
+      // Return users data
       res.status(200).json({
         success: true,
         data: users,

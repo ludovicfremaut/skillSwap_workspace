@@ -1,27 +1,60 @@
+/**
+ * CONTRÔLEUR DE GESTION DES SERVICES
+ * 
+ * Ce contrôleur gère toutes les opérations liées aux services dans l'application SkillSwap.
+ * Un service représente une offre ou demande d'échange de compétences entre utilisateurs.
+ * Il gère la création, récupération, mise à jour et suppression des services.
+ * 
+ * Fonctionnalités principales :
+ * - Création de nouveaux services (offres/demandes)
+ * - Récupération des services liés à un utilisateur connecté
+ * - Mise à jour du statut des services (pending, active, completed, cancelled)
+ * - Gestion des relations entre utilisateurs via les services
+ * - Validation des permissions et de l'authentification
+ * 
+ * États des services gérés :
+ * - "pending" : Service proposé en attente d'acceptation
+ * - "active" : Service accepté et en cours
+ * - "completed" : Service terminé avec succès
+ * - "cancelled" : Service annulé par l'une des parties
+ * 
+ * Sécurité :
+ * - Vérification de l'authentification JWT obligatoire
+ * - Validation des permissions utilisateur
+ * - Contrôle d'accès aux données sensibles
+ * - Validation des données d'entrée
+ * 
+ * @author Équipe SkillSwap
+ * @version 1.0.0
+ */
+
 import { Request, Response } from "express";
 import { Service } from "../models/associations";
 import { getAllServicesForUser } from "../queries/service.queries";
 
-// Interface pour typer la requête avec les infos JWT
+// Interface to type requests with JWT authentication data
 interface AuthenticatedRequest extends Request {
-  user?: { id: string; email: string };
+  user?: { id: string; email: string }; // User data from JWT token
 }
 
 export const serviceController = {
+  // Create a new service proposal between users
   createService: async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const senderId = Number(req.user?.id); // ID du token
+      const senderId = Number(req.user?.id); // Get sender ID from JWT token
       const { receiver_id, object } = req.body;
 
+      // Validate required fields
       if (!receiver_id || !object) {
         return res.status(400).json({ message: "Champs requis manquants" });
       }
 
+      // Create new service with "pending" status
       const newService = await Service.create({
-        object,
-        status: "pending",
-        sender_id: senderId,
-        receiver_id,
+        object, // Service description
+        status: "pending", // Initial status
+        sender_id: senderId, // User proposing the service
+        receiver_id, // User who will receive the service proposal
       });
 
       res.status(201).json({
@@ -34,12 +67,14 @@ export const serviceController = {
     }
   },
 
+  // Get all services related to the authenticated user
   getAllForLoggedUser: async (req: AuthenticatedRequest, res: Response) => {
     // console.log("→ user dans getAllForLoggedUser :", req.user);
 
     try {
-      const userId = Number(req.user?.id); // On récupère depuis le JWT
+      const userId = Number(req.user?.id); // Extract user ID from JWT
 
+      // Fetch all services where user is sender or receiver
       const services = await getAllServicesForUser(userId);
 
       res.status(200).json({

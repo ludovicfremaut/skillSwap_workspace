@@ -1,17 +1,75 @@
+/**
+ * MODAL DE COMPOSITION DE MESSAGE - INTERFACE DE MESSAGERIE
+ * 
+ * Ce composant React Modal permet aux utilisateurs d'envoyer des messages
+ * directs à d'autres membres de SkillSwap. Il fournit une interface simple
+ * et intuitive pour la communication entre utilisateurs.
+ * 
+ * Fonctionnalités principales :
+ * - Interface de composition de message avec textarea
+ * - Validation des données avant envoi (message non vide)
+ * - Gestion des erreurs avec affichage utilisateur
+ * - Envoi asynchrone avec feedback de succès
+ * - Fermeture automatique après envoi réussi
+ * 
+ * Comportement modal :
+ * - Blocage du scroll de la page principale quand ouvert
+ * - Restauration du scroll à la fermeture
+ * - Overlay de fond pour isoler l'interface
+ * - Boutons d'action (Envoyer/Annuler) clairement visibles
+ * 
+ * Gestion d'état :
+ * - State local pour le contenu du message en cours
+ * - Gestion des erreurs avec affichage contextuel
+ * - Reset automatique du formulaire après envoi
+ * - Validation côté client avant soumission
+ * 
+ * API et données :
+ * - Utilisation du service message.service.ts
+ * - Construction automatique de l'objet message avec IDs
+ * - Gestion des erreurs réseau et serveur
+ * - Callback de fermeture pour communication parent
+ * 
+ * Sécurité :
+ * - Validation des IDs utilisateur (sender/receiver)
+ * - Nettoyage des espaces pour éviter messages vides
+ * - Protection contre l'envoi multiple rapide
+ * - Gestion appropriée des erreurs d'authentification
+ * 
+ * Expérience utilisateur :
+ * - Interface claire et accessible
+ * - Feedback immédiat sur les actions
+ * - Messages d'erreur compréhensibles
+ * - Fermeture fluide avec restoration d'état
+ * 
+ * Utilisation dans l'application :
+ * - Cartes utilisateur pour contact direct
+ * - Profils utilisateur pour initier conversation
+ * - Réponse rapide dans l'interface de messagerie
+ * - Contact depuis les services et évaluations
+ * 
+ * @author Équipe SkillSwap
+ * @version 1.0.0
+ */
+
 import { createMessage } from "@/services/message.service";
 import { useEffect, useState } from "react";
 
+// Props interface for MessageModal component
 export default function MessageModal({
-  onClose,
-  receiverId,
-  userId,
+  onClose,      // Callback function to close the modal
+  receiverId,   // ID of the user who will receive the message
+  userId,       // ID of the current user sending the message
 }: {
   onClose: () => void;
   receiverId: number;
   userId: number;
 }) {
-  const [error, setError] = useState<Error | null>(null);
-  const [newMessage, setNewMessage] = useState("");
+  // State management for message composition
+  const [error, setError] = useState<Error | null>(null); // Error handling
+  const [newMessage, setNewMessage] = useState("");       // Message content
+  
+  // Handle modal body scroll blocking on mount/unmount
   useEffect(() => {
     // Block body scroll when modal is open
     document.body.style.overflow = "hidden";
@@ -21,10 +79,12 @@ export default function MessageModal({
     };
   }, []);
 
+  // Handle message sending with validation and error handling
   const handleSendMessage = async () => {
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim()) return; // Don't send empty messages
 
     try {
+      // Prepare message data for API
       const messageData = {
         sender_id: userId,
         receiver_id: receiverId,

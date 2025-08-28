@@ -1,0 +1,76 @@
+# Dépendances Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Variables d'environnement
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+
+# Base de données locale
+*.sqlite
+*.sqlite3
+
+# Cache
+.cache/
+.tmp/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# ====================================
+# 📚 DOCUMENTATION CDA - CONFIDENTIELLE
+# ====================================
+
+# Dossier complet documentation CDA
+docs/
+
+# Fichiers de documentation individuels
+DOCUMENTATION_CDA.md
+DOSSIER_PROJET_COMPLET_CDA.md
+BILAN_CONFORMITE_SOUTENANCE_CDA.md
+DIAGRAMMES_SEQUENCE_CDA.md
+SECURITE_TESTS_CDA.md
+LEXIQUE_TECHNIQUE_CDA.md
+LEXIQUE_TECHNIQUE_DEPANNAGE.md
+VEILLE_TECHNOLOGIQUE_CDA.md
+SLIDES_POWERPOINT_SKILLSWAP.md
+FICHES_AIDE_MEMOIRE_SOUTENANCE.md
+GUIDE_CODES_ERREUR_DEPANNAGE.md
+CHECKLIST_FINALE_SOUTENANCE.md
+RECAPITULATIF_FINAL_CDA.md
+
+# Captures d'écran et assets CDA
+*.png
+*.jpg
+*.jpeg
+*.pdf
+*Screenshot*
+
+# Fichiers Word/PowerPoint de soutenance
+*.docx
+*.pptx
+*.doc
+*.ppt
+
+# ====================================
+# IDE et éditeurs
+# ====================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*~
+*.bak
+*.backup

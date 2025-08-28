@@ -25,7 +25,7 @@ export default function SkillModal({ selectedSkills, onClose, onSave }: Props) {
       <div className="bg-[var(--color-whitish)] text-black rounded-2xl shadow-lg max-w-2xl w-full p-6 animate-fade-in">
         {/* Titre de la modale */}
         <h2 className="text-xl font-bold text-[var(--color-secondary)] mb-4 text-center">
-          ✨ Sélection des compétences
+          Sélection des compétences
         </h2>
 
         {/* Composant de sélection des compétences (avec gestion par checkbox) */}

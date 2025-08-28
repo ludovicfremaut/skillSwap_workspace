@@ -1,8 +1,32 @@
+/**
+ * CONTRÔLEUR D'AUTHENTIFICATION
+ * 
+ * Ce contrôleur gère toutes les opérations liées à l'authentification des utilisateurs
+ * dans l'application SkillSwap. Il inclut les fonctionnalités de connexion, déconnexion
+ * et inscription avec gestion sécurisée des mots de passe et des tokens JWT.
+ * 
+ * Fonctionnalités principales :
+ * - Login : Vérification des identifiants et génération de token JWT
+ * - Logout : Suppression du token d'authentification
+ * - Register : Création de nouveaux comptes utilisateur avec validation
+ * 
+ * Sécurité implémentée :
+ * - Hachage des mots de passe avec Argon2
+ * - Tokens JWT stockés dans des cookies HttpOnly
+ * - Protection CSRF avec SameSite strict
+ * - Validation des données d'entrée
+ * - Gestion d'erreurs sécurisée
+ * 
+ * @author Équipe SkillSwap
+ * @version 1.0.0
+ */
+
 import { Request, Response } from "express";
 import { User } from "../models/associations";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 
+// JWT secret key from environment variables
 const jwtSecretKey = process.env.JWT_SECRET_KEY as string;
 
 const authController = {

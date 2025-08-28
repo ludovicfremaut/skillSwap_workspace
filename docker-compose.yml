@@ -1,62 +1,94 @@
-# Je déclare mes trois services : Postgres, Backend et Frontend
+# CONFIGURATION DOCKER COMPOSE POUR SKILLSWAP
+# 
+# Ce fichier définit l'architecture complète de l'application SkillSwap en utilisant Docker.
+# Il orchestre trois services principaux : une base de données PostgreSQL, un backend Node.js,
+# et un frontend React, tous connectés dans un environnement de développement.
+# 
+# Architecture des services :
+# - db : Base de données PostgreSQL avec persistance des données
+# - backend : API Node.js/Express avec TypeScript et rechargement automatique
+# - frontend : Application React avec Vite en mode développement
+# 
+# Fonctionnalités :
+# - Réseaux isolés pour la communication inter-services
+# - Volumes persistants pour les données de la base
+# - Configuration des variables d'environnement
+# - Health checks pour s'assurer de la disponibilité des services
+# - Hot reload pour le développement (backend et frontend)
+# - Gestion des dépendances entre services
+# 
+# Ports exposés :
+# - 5432 : PostgreSQL (accès direct pour debug)
+# - 3000 : Backend API
+# - 5173 : Frontend Vite dev server
+# 
+# @author Équipe SkillSwap
+# @version 1.0.0
+
+# Service definitions for the SkillSwap application
 services:
 
+  # PostgreSQL database service
   db:
-    image: postgres:16-alpine
+    image: postgres:16-alpine # Lightweight PostgreSQL image
     container_name: skillswap-db
-    restart: always
+    restart: always # Auto-restart on failure
     env_file:
-      - ./app/back/.env
+      - ./app/back/.env # Load database credentials from .env
     ports:
-      - "5432:5432"
+      - "5432:5432" # Expose PostgreSQL port for external access
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data # Persist database data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 5s
+      interval: 5s # Check every 5 seconds
       timeout: 5s
-      retries: 20
+      retries: 20 # Retry 20 times before marking as unhealthy
 
+  # Node.js/Express backend API service
   backend:
     build:
-      context: ./app/back
+      context: ./app/back # Build from backend directory
     container_name: skillswap-back
-    restart: always
+    restart: always # Auto-restart on failure
     env_file:
-      - ./app/back/.env
+      - ./app/back/.env # Load environment variables
     environment:
-      PG_URL: postgres://skillswap:skillswap@db:5432/skillswap
+      PG_URL: postgres://skillswap:skillswap@db:5432/skillswap # Database connection string
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_healthy # Wait for database to be ready
     ports:
-      - "3000:3000"
+      - "3000:3000" # Expose API port
     volumes:
-      - ./app/back:/src
-      - /src/node_modules
+      - ./app/back:/src # Mount source code for hot reload
+      - /src/node_modules # Exclude node_modules from host
     working_dir: /src
-    command: sh -c "npm run db:reset && npm run dev"
+    command: sh -c "npm run db:reset && npm run dev" # Reset DB and start dev server
 
+  # React frontend application service
   frontend:
     build:
-      context: ./app/front
+      context: ./app/front # Build from frontend directory
     container_name: skillswap-front
-    restart: unless-stopped
+    restart: unless-stopped # Restart unless manually stopped
     depends_on:
-      - backend
+      - backend # Wait for backend to be available
     ports:
-      - "5173:5173"
+      - "5173:5173" # Expose Vite dev server port
     environment:
-      VITE_API_URL: /api
+      VITE_API_URL: /api # API base URL for frontend requests
     volumes:
-      - ./app/front:/src
-      - /src/node_modules
+      - ./app/front:/src # Mount source code for hot reload
+      - /src/node_modules # Exclude node_modules from host
     working_dir: /src
-    command: npm run dev -- --host 0.0.0.0 --port 5173
+    command: npm run dev -- --host 0.0.0.0 --port 5173 # Start Vite dev server
 
+# Network configuration for service communication
 networks:
   default:
-    name: skillswap_net
+    name: skillswap_net # Custom network name for isolation
 
+# Persistent volume definitions
 volumes:
-  db_data:
+  db_data: # PostgreSQL data persistence

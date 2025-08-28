@@ -1,3 +1,56 @@
+/**
+ * SECTION FORMULAIRES - INSCRIPTION ET CONNEXION COMBINÉES
+ * 
+ * Ce composant React orchestre l'affichage des formulaires d'inscription
+ * et de connexion dans l'application SkillSwap. Il adapte l'interface
+ * selon la taille d'écran avec un design responsive optimal.
+ * 
+ * Fonctionnalités principales :
+ * - Affichage simultané des deux formulaires sur desktop (2 colonnes)
+ * - Bascule mobile entre inscription et connexion avec bouton toggle
+ * - Interface adaptive selon la taille d'écran
+ * - Design cohérent avec la charte graphique de l'application
+ * - Gestion d'état local pour le mode d'affichage mobile
+ * 
+ * Comportement responsive :
+ * - Desktop (md+) : Grille 2 colonnes côte à côte
+ * - Mobile : Un seul formulaire visible avec bascule
+ * - Tablet : Adaptation automatique selon l'espace disponible
+ * - Interfaces tactiles optimisées
+ * 
+ * Design et styles :
+ * - Couleurs variables CSS pour cohérence thématique
+ * - Formulaire inscription sur fond primary (contraste élevé)
+ * - Formulaire connexion sur fond secondary
+ * - Bordures et ombres pour définition visuelle
+ * - Espacement harmonieux pour lisibilité
+ * 
+ * Gestion d'état :
+ * - showSignup : Boolean pour contrôler l'affichage mobile
+ * - Classes conditionnelles pour visibility responsive
+ * - État persistant durant la session de navigation
+ * 
+ * Composants enfants :
+ * - SignupForm : Formulaire complet d'inscription
+ * - LoginForm : Formulaire de connexion simple
+ * - Intégration transparente avec validation et soumission
+ * 
+ * Expérience utilisateur :
+ * - Transition fluide entre les modes d'affichage
+ * - Call-to-action clairs pour chaque action
+ * - Titles explicites pour guider l'utilisateur
+ * - Interface intuitive pour tous niveaux
+ * 
+ * Utilisation dans l'application :
+ * - Page Register comme composant principal
+ * - Point d'entrée unique pour authentification
+ * - Conversion des visiteurs en utilisateurs actifs
+ * - Onboarding simplifié et efficace
+ * 
+ * @author Équipe SkillSwap
+ * @version 1.0.0
+ */
+
 import { useState } from "react";
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";

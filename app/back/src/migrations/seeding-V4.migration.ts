@@ -1,3 +1,50 @@
+/**
+ * MIGRATION DE REMPLISSAGE DE LA BASE DE DONNÉES - VERSION 4
+ * 
+ * Ce fichier de migration contient le script de peuplement (seeding) de la base de données
+ * avec des données d'exemple pour l'application SkillSwap. Il crée un jeu de données
+ * réaliste pour tester et démontrer toutes les fonctionnalités de l'application.
+ * 
+ * Fonctionnalités de peuplement :
+ * - Création des rôles utilisateur (Admin, Membre, Modérateur, Invité)
+ * - Ajout de 20 compétences variées couvrant différents domaines
+ * - Génération d'utilisateurs avec profils complets et mots de passe sécurisés
+ * - Création de services (offres et demandes) entre utilisateurs
+ * - Génération de messages entre utilisateurs pour démonstration
+ * - Ajout d'évaluations et commentaires sur les services
+ * 
+ * Domaines de compétences couverts :
+ * - Arts créatifs : Peinture, Dessin, Sculpture, Photographie
+ * - Artisanat : Menuiserie, Ébénisterie, Couture, Broderie, Modélisme
+ * - Techniques : Programmation, Mécanique
+ * - Domestique : Cuisine, Jardinage
+ * - Culturel : Danse, Chant, Musique, Écriture
+ * - Spécialisé : Maquillage artistique, Origami
+ * 
+ * Sécurité :
+ * - Mots de passe hachés avec Argon2 (standard de sécurité)
+ * - Données d'exemple non sensibles pour développement
+ * - IDs fixes pour reproductibilité des tests
+ * 
+ * Utilisation :
+ * - Développement local avec données de démonstration
+ * - Tests d'intégration avec jeu de données cohérent
+ * - Présentation de l'application avec contenu réaliste
+ * - Formation et onboarding des nouveaux développeurs
+ * 
+ * Structure des données :
+ * - 4 rôles avec permissions différenciées
+ * - 20 compétences dans diverses catégories
+ * - Utilisateurs avec profils complets et localisation
+ * - Relations many-to-many entre utilisateurs et compétences
+ * - Services interconnectés pour démontrer les échanges
+ * - Historique de messages pour tester la messagerie
+ * 
+ * @author Équipe SkillSwap
+ * @version 4.0.0
+ * @requires argon2 Pour le hachage sécurisé des mots de passe
+ */
+
 import {
   User,
   Role,
@@ -11,37 +58,50 @@ import argon2 from "argon2";
 
 console.log("Starting database seeding...");
 
-// * AJOUT DE RÔLES
+// * CRÉATION DES RÔLES UTILISATEUR AVEC PERMISSIONS HIÉRARCHIQUES
 console.log("Adding roles...");
-const roleMember = await Role.create({ id: 10, name: "Membre" });
-const roleModerator = await Role.create({ id: 20, name: "Modérateur" });
-const roleGuest = await Role.create({ id: 30, name: "Invité" });
-const roleAdmin = await Role.create({ id: 1, name: "Admin" });
+const roleMember = await Role.create({ id: 10, name: "Membre" }); // Utilisateur standard
+const roleModerator = await Role.create({ id: 20, name: "Modérateur" }); // Modération contenu
+const roleGuest = await Role.create({ id: 30, name: "Invité" }); // Accès limité
+const roleAdmin = await Role.create({ id: 1, name: "Admin" }); // Tous les droits
 
 
-// * AJOUT DE COMPÉTENCES
+// * CRÉATION DU CATALOGUE DE COMPÉTENCES DIVERSIFIÉES
 console.log("Adding skills...");
+// Arts visuels et créatifs
 const peinture = await Skill.create({ id: 10, name: "Peinture" });
-const cuisine = await Skill.create({ id: 20, name: "Cuisine" });
-const programmation = await Skill.create({ id: 30, name: "Programmation" });
-const jardinage = await Skill.create({ id: 40, name: "Jardinage" });
-const menuiserie = await Skill.create({ id: 50, name: "Menuiserie" });
-const photographie = await Skill.create({ id: 60, name: "Photographie" });
-const couture = await Skill.create({ id: 70, name: "Couture" });
 const dessin = await Skill.create({ id: 80, name: "Dessin" });
-const mécanique = await Skill.create({ id: 90, name: "Mécanique" });
+const photographie = await Skill.create({ id: 60, name: "Photographie" });
+const sculpture = await Skill.create({ id: 170, name: "Sculpture" });
+
+// Artisanat et fabrication
+const cuisine = await Skill.create({ id: 20, name: "Cuisine" });
+const menuiserie = await Skill.create({ id: 50, name: "Menuiserie" });
 const ébénisterie = await Skill.create({ id: 100, name: "Ébénisterie" });
+const couture = await Skill.create({ id: 70, name: "Couture" });
+const coutureMachine = await Skill.create({ id: 150, name: "Couture à la machine" });
+const broderie = await Skill.create({ id: 190, name: "Broderie" });
+
+// Techniques et technology
+const programmation = await Skill.create({ id: 30, name: "Programmation" });
+const mécanique = await Skill.create({ id: 90, name: "Mécanique" });
+
+// Extérieur et nature
+const jardinage = await Skill.create({ id: 40, name: "Jardinage" });
+
+// Arts du spectacle et expression
 const danse = await Skill.create({ id: 110, name: "Danse" });
 const chant = await Skill.create({ id: 120, name: "Chant" });
-const écriture = await Skill.create({ id: 130, name: "Écriture" });
 const musique = await Skill.create({ id: 140, name: "Musique" });
-const coutureMachine = await Skill.create({ id: 150, name: "Couture à la machine" });
+const écriture = await Skill.create({ id: 130, name: "Écriture" });
+
+// Spécialités créatives
 const modélisme = await Skill.create({ id: 160, name: "Modélisme" });
-const sculpture = await Skill.create({ id: 170, name: "Sculpture" });
 const origami = await Skill.create({ id: 180, name: "Origami" });
-const broderie = await Skill.create({ id: 190, name: "Broderie" });
 const maquillageArtistique = await Skill.create({ id: 200, name: "Maquillage artistique" });
 
+// * CRÉATION DES UTILISATEURS AVEC PROFILS COMPLETS
+console.log("Adding users with complete profiles...");
 const user1 = await User.create({
   id: 1,
   email: "alice@example.com",
@@ -50,7 +110,7 @@ const user1 = await User.create({
   street: "1 Rue de Martin",
   zipcode: "75000",
   city: "Paris",
-  password: await argon2.hash("password_alice"),
+  password: await argon2.hash("Password_alice_1"),
   profile_picture: "https://api.dicebear.com/7.x/adventurer/svg?seed=alice-martin",
   description: "Je suis Alice, passionnée par la peinture.",
   availability: "Flexible",
@@ -66,7 +126,7 @@ const user2 = await User.create({
   street: "10 Avenue des Champs",
   zipcode: "69000",
   city: "Lyon",
-  password: await argon2.hash("password_bob"),
+  password: await argon2.hash("Password_bob_1"),
   profile_picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=bob-durand",
   description: "Bob aime le jardinage et le bricolage.",
   availability: "Weekends",
@@ -82,7 +142,7 @@ const user3 = await User.create({
   street: "22 Rue Lafayette",
   zipcode: "31000",
   city: "Toulouse",
-  password: await argon2.hash("password_carol"),
+  password: await argon2.hash("Password_carol_1"),
   profile_picture: "https://api.dicebear.com/7.x/big-smile/svg?seed=carol-lemoine",
   description: "Carol est experte en photographie.",
   availability: "Soirées",
@@ -98,7 +158,7 @@ const user4 = await User.create({
   street: "5 Place Bellecour",
   zipcode: "69002",
   city: "Lyon",
-  password: await argon2.hash("password_david"),
+  password: await argon2.hash("Password_david_1"),
   profile_picture: "https://api.dicebear.com/7.x/gridy/svg?seed=david-moreau",
   description: "David est passionné de programmation.",
   availability: "Matin",
@@ -114,7 +174,7 @@ const user5 = await User.create({
   street: "15 Rue de la Paix",
   zipcode: "75002",
   city: "Paris",
-  password: await argon2.hash("password_emma"),
+  password: await argon2.hash("Password_emma_1"),
   profile_picture: "https://api.dicebear.com/7.x/personas/svg?seed=emma-petit",
   description: "Emma adore la cuisine française.",
   availability: "Flexible",
@@ -130,7 +190,7 @@ const user6 = await User.create({
   street: "30 Boulevard Haussmann",
   zipcode: "75009",
   city: "Paris",
-  password: await argon2.hash("password_francois"),
+  password: await argon2.hash("Password_francois_1"),
   profile_picture: "https://api.dicebear.com/7.x/adventurer/svg?seed=francois-dubois",
   description: "François aime le jardinage.",
   availability: "Weekends",
@@ -146,7 +206,7 @@ const user7 = await User.create({
   street: "12 Rue de Rivoli",
   zipcode: "75001",
   city: "Paris",
-  password: await argon2.hash("password_gabriel"),
+  password: await argon2.hash("Password_gabriel_1"),
   profile_picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=gabriel-leroy",
   description: "Gabriel est fan de bricolage.",
   availability: "Soirées",
@@ -162,7 +222,7 @@ const user8 = await User.create({
   street: "40 Rue Saint-Honoré",
   zipcode: "75001",
   city: "Paris",
-  password: await argon2.hash("password_hannah"),
+  password: await argon2.hash("Password_hannah_1"),
   profile_picture: "https://api.dicebear.com/7.x/big-smile/svg?seed=hannah-morel",
   description: "Hannah aime la photographie.",
   availability: "Flexible",
@@ -178,7 +238,7 @@ const user9 = await User.create({
   street: "18 Avenue Victor Hugo",
   zipcode: "75016",
   city: "Paris",
-  password: await argon2.hash("password_isaac"),
+  password: await argon2.hash("Password_isaac_1"),
   profile_picture: "https://api.dicebear.com/7.x/gridy/svg?seed=isaac-simon",
   description: "Isaac adore le développement web.",
   availability: "Matin",
@@ -194,7 +254,7 @@ const user10 = await User.create({
   street: "25 Rue du Faubourg",
   zipcode: "69003",
   city: "Lyon",
-  password: await argon2.hash("password_julia"),
+  password: await argon2.hash("Password_julia_1"),
   profile_picture: "https://api.dicebear.com/7.x/personas/svg?seed=julia-fabre",
   description: "Julia est passionnée par la cuisine.",
   availability: "Flexible",
@@ -210,7 +270,7 @@ const user11 = await User.create({
   street: "7 Rue des Lilas",
   zipcode: "31000",
   city: "Toulouse",
-  password: await argon2.hash("password_kevin"),
+  password: await argon2.hash("Password_kevin_1"),
   profile_picture: "https://api.dicebear.com/7.x/adventurer/svg?seed=kevin-garnier",
   description: "Kevin aime le jardinage.",
   availability: "Weekends",
@@ -226,7 +286,7 @@ const user12 = await User.create({
   street: "9 Rue des Fleurs",
   zipcode: "69007",
   city: "Lyon",
-  password: await argon2.hash("password_laura"),
+  password: await argon2.hash("Password_laura_1"),
   profile_picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=laura-bernard",
   description: "Laura est une experte en photographie.",
   availability: "Soirées",
@@ -242,7 +302,7 @@ const user13 = await User.create({
   street: "14 Boulevard Voltaire",
   zipcode: "75011",
   city: "Paris",
-  password: await argon2.hash("password_maxime"),
+  password: await argon2.hash("Password_maxime_1"),
   profile_picture: "https://api.dicebear.com/7.x/big-smile/svg?seed=maxime-rousseau",
   description: "Maxime adore la programmation.",
   availability: "Matin",
@@ -258,7 +318,7 @@ const user14 = await User.create({
   street: "8 Rue des Acacias",
   zipcode: "75017",
   city: "Paris",
-  password: await argon2.hash("password_nina"),
+  password: await argon2.hash("Password_nina_1"),
   profile_picture: "https://api.dicebear.com/7.x/gridy/svg?seed=nina-garcia",
   description: "Nina aime la peinture.",
   availability: "Flexible",
@@ -274,7 +334,7 @@ const user15 = await User.create({
   street: "20 Avenue Jean Jaurès",
   zipcode: "69008",
   city: "Lyon",
-  password: await argon2.hash("password_olivier"),
+  password: await argon2.hash("Password_olivier_1"),
   profile_picture: "https://api.dicebear.com/7.x/personas/svg?seed=olivier-petit",
   description: "Olivier est passionné par le bricolage.",
   availability: "Weekends",
@@ -290,7 +350,7 @@ const user16 = await User.create({
   street: "3 Rue de la République",
   zipcode: "31000",
   city: "Toulouse",
-  password: await argon2.hash("password_pauline"),
+  password: await argon2.hash("Password_pauline_1"),
   profile_picture: "https://api.dicebear.com/7.x/adventurer/svg?seed=pauline-lemoine",
   description: "Pauline adore la cuisine.",
   availability: "Flexible",
@@ -306,7 +366,7 @@ const user17 = await User.create({
   street: "11 Rue de la Liberté",
   zipcode: "69003",
   city: "Lyon",
-  password: await argon2.hash("password_quentin"),
+  password: await argon2.hash("Password_quentin_1"),
   profile_picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=quentin-dumas",
   description: "Quentin aime le jardinage.",
   availability: "Weekends",
@@ -322,7 +382,7 @@ const user18 = await User.create({
   street: "29 Rue Saint-Michel",
   zipcode: "75005",
   city: "Paris",
-  password: await argon2.hash("password_rachel"),
+  password: await argon2.hash("Password_rachel_1"),
   profile_picture: "https://api.dicebear.com/7.x/big-smile/svg?seed=rachel-moreau",
   description: "Rachel est passionnée de photographie.",
   availability: "Soirées",
@@ -338,7 +398,7 @@ const user19 = await User.create({
   street: "17 Boulevard Saint-Germain",
   zipcode: "75006",
   city: "Paris",
-  password: await argon2.hash("password_sebastien"),
+  password: await argon2.hash("Password_sebastien_1"),
   profile_picture: "https://api.dicebear.com/7.x/gridy/svg?seed=sebastien-dubois",
   description: "Sébastien adore la programmation.",
   availability: "Matin",
@@ -354,7 +414,7 @@ const user20 = await User.create({
   street: "6 Rue des Lilas",
   zipcode: "31000",
   city: "Toulouse",
-  password: await argon2.hash("password_tania"),
+  password: await argon2.hash("Password_tania_1"),
   profile_picture: "https://api.dicebear.com/7.x/personas/svg?seed=tania-lemoine",
   description: "Tania aime la peinture.",
   availability: "Flexible",
@@ -370,7 +430,7 @@ const user21 = await User.create({
   street: "19 Rue des Fleurs",
   zipcode: "75010",
   city: "Paris",
-  password: await argon2.hash("password_ulrich"),
+  password: await argon2.hash("Password_ulrich_1"),
   profile_picture: "https://api.dicebear.com/7.x/adventurer/svg?seed=ulrich-germain",
   description: "Ulrich aime le bricolage.",
   availability: "Weekends",
@@ -386,7 +446,7 @@ const user22 = await User.create({
   street: "21 Avenue du Général",
   zipcode: "69005",
   city: "Lyon",
-  password: await argon2.hash("password_valerie"),
+  password: await argon2.hash("Password_valerie_1"),
   profile_picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=valerie-carpentier",
   description: "Valérie adore la cuisine.",
   availability: "Flexible",
@@ -402,7 +462,7 @@ const user23 = await User.create({
   street: "8 Rue des Champs",
   zipcode: "31000",
   city: "Toulouse",
-  password: await argon2.hash("password_william"),
+  password: await argon2.hash("Password_william_1"),
   profile_picture: "https://api.dicebear.com/7.x/big-smile/svg?seed=william-lemoine",
   description: "William aime le jardinage.",
   availability: "Weekends",
@@ -418,7 +478,7 @@ const user24 = await User.create({
   street: "2 Rue de la Paix",
   zipcode: "75002",
   city: "Paris",
-  password: await argon2.hash("password_xavier"),
+  password: await argon2.hash("Password_xavier_1"),
   profile_picture: "https://api.dicebear.com/7.x/personas/svg?seed=xavier-martin",
   description: "Xavier est passionné de programmation.",
   availability: "Matin",
@@ -434,7 +494,7 @@ const user25 = await User.create({
   street: "11 Rue Lafayette",
   zipcode: "31000",
   city: "Toulouse",
-  password: await argon2.hash("password_yasmine"),
+  password: await argon2.hash("Password_yasmine_1"),
   profile_picture: "https://api.dicebear.com/7.x/personas/svg?seed=yasmine-roux",
   description: "Yasmine aime la photographie.",
   availability: "Soirées",

@@ -12,7 +12,7 @@ export function useServiceStatus(
 
   const changeStatus = async (newStatus: IServiceStatus) => {
     setLoading(true);
-    // console.log(`🔄 Tentative de changement du statut du service ${serviceId} vers "${newStatus}"...`)
+    // console.log(`Tentative de changement du statut du service ${serviceId} vers "${newStatus}"...`)
 
     try {
       const response = await updateServiceStatus(serviceId, newStatus);

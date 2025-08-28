@@ -1,3 +1,63 @@
+/**
+ * PAGE PROFIL PERSONNEL - GESTION DU COMPTE UTILISATEUR
+ * 
+ * Cette page React constitue l'espace personnel de l'utilisateur connecté
+ * dans l'application SkillSwap. Elle centralise la gestion du profil,
+ * l'affichage des services et la configuration du compte.
+ * 
+ * Fonctionnalités principales :
+ * - Affichage et modification du profil utilisateur (inline editing)
+ * - Visualisation de tous les services de l'utilisateur
+ * - Gestion des échanges de services (statuts, historique)
+ * - Déconnexion sécurisée avec redirection
+ * - Interface d'administration personnelle
+ * 
+ * Modes d'affichage :
+ * - Mode lecture : Affichage des informations avec option modification
+ * - Mode édition : Formulaire inline pour mise à jour du profil
+ * - Vue services : Liste complète des échanges en cours et terminés
+ * - Gestion des permissions selon l'utilisateur connecté
+ * 
+ * Gestion des services :
+ * - Récupération des services personnels (getMyServices)
+ * - Récupération des services d'un utilisateur spécifique (getRawServices)
+ * - Mise à jour des statuts de service en temps réel
+ * - Historique complet des échanges effectués
+ * 
+ * Édition de profil :
+ * - Modification inline avec icônes Lucide React
+ * - Validation des données avant sauvegarde
+ * - Feedback utilisateur pour les opérations
+ * - Annulation possible des modifications
+ * 
+ * Sécurité et authentification :
+ * - Vérification de l'identité pour l'accès aux données
+ * - Déconnexion propre avec nettoyage de session
+ * - Protection contre l'accès non autorisé
+ * - Redirection sécurisée après déconnexion
+ * 
+ * États de données gérés :
+ * - Utilisateur connecté avec informations complètes
+ * - Services associés (offerts et demandés)
+ * - États d'édition et erreurs de validation
+ * - Données temporaires pour modification
+ * 
+ * Interface utilisateur :
+ * - ServiceCard : Affichage de chaque service avec actions
+ * - Card : Container pour informations structurées
+ * - Icônes Lucide : Interface moderne et accessible
+ * - Design responsive pour tous écrans
+ * 
+ * Utilisation dans l'application :
+ * - Tableau de bord principal après connexion
+ * - Centre de gestion des échanges de compétences
+ * - Point d'accès aux paramètres de compte
+ * - Interface de suivi des activités
+ * 
+ * @author Équipe SkillSwap
+ * @version 1.0.0
+ */
+
 import { useParams } from "react-router-dom";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -12,18 +72,21 @@ import { Pencil, Save } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/Card";
 
 export default function PersonalPage() {
-  const { id } = useParams();
-  const [services, setServices] = useState<IService[]>([]);
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
-  const [error, setError] = useState("");
-  const [showServices, setShowServices] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedUser, setEditedUser] = useState<IUser | null>(null);
+  const { id } = useParams(); // Extract user ID from URL parameters
+  
+  // State management for personal page functionality
+  const [services, setServices] = useState<IService[]>([]); // User's services list
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null); // Current user data
+  const [error, setError] = useState(""); // Error message display
+  const [showServices, setShowServices] = useState(false); // Services view toggle
+  const [isEditing, setIsEditing] = useState(false); // Profile editing mode
+  const [editedUser, setEditedUser] = useState<IUser | null>(null); // Temporary edit data
 
+  // Handle secure logout with session cleanup
   const handleLogout = async () => {
     try {
-      await logout();
-      window.location.href = "/register";
+      await logout(); // Call logout service
+      window.location.href = "/register"; // Redirect to registration
     } catch (error) {
       console.error("Erreur lors de la déconnexion:", error);
     }

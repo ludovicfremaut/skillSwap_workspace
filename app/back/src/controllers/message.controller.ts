@@ -1,20 +1,57 @@
+/**
+ * CONTRÔLEUR DE GESTION DES MESSAGES
+ * 
+ * Ce contrôleur gère le système de messagerie entre utilisateurs de l'application SkillSwap.
+ * Il permet aux utilisateurs de communiquer directement pour organiser leurs échanges
+ * de compétences et services.
+ * 
+ * Fonctionnalités principales :
+ * - Récupération des conversations entre deux utilisateurs
+ * - Création et envoi de nouveaux messages
+ * - Récupération des derniers messages pour un utilisateur
+ * - Gestion de la sécurité et des permissions d'accès
+ * 
+ * Sécurité implémentée :
+ * - Vérification de l'authentification JWT obligatoire
+ * - Contrôle d'accès : seuls les participants peuvent voir une conversation
+ * - Validation des permissions avant affichage des messages
+ * - Protection contre l'accès non autorisé aux conversations privées
+ * 
+ * Structure des messages :
+ * - Expéditeur (sender_id) et destinataire (receiver_id)
+ * - Contenu du message et horodatage
+ * - Tri chronologique pour l'affichage des conversations
+ * 
+ * Utilisation dans l'application :
+ * - Communication pour négocier les services
+ * - Coordination des échanges de compétences
+ * - Support et assistance entre utilisateurs
+ * - Feedback après réalisation des services
+ * 
+ * @author Équipe SkillSwap
+ * @version 1.0.0
+ */
+
 import { Request, Response } from "express";
 import Message from "../models/Message.model";
 import { Op } from "sequelize";
 import { QueryTypes } from "sequelize";
 
+// Interface defining message controller methods
 interface MessageController {
-  getConversation(req: Request, res: Response): Promise<void>;
-  createMessage(req: Request, res: Response): Promise<void>;
-  getLatestMessagesForUser(req: Request, res: Response): Promise<void>;
+  getConversation(req: Request, res: Response): Promise<void>; // Get messages between two users
+  createMessage(req: Request, res: Response): Promise<void>; // Send new message
+  getLatestMessagesForUser(req: Request, res: Response): Promise<void>; // Get recent messages
 }
 
 const messageController: MessageController = {
+  // Get conversation between authenticated user and another user
   getConversation: async (req: Request, res: Response) => {
     try {
-      const authenticatedUserId = req.user!.id;
+      const authenticatedUserId = req.user!.id; // Get authenticated user ID from JWT
       const { userId, contactId } = req.params;
 
+      // Security check: ensure user can only access their own conversations
       if (
         Number(userId) !== authenticatedUserId &&
         Number(contactId) !== authenticatedUserId
@@ -25,7 +62,7 @@ const messageController: MessageController = {
         return;
       }
 
-      // Validate parameters
+      // Validate required parameters
       if (!authenticatedUserId || !contactId) {
         res
           .status(400)
@@ -33,15 +70,15 @@ const messageController: MessageController = {
         return;
       }
 
-      // Fetch messages between the two users
+      // Fetch all messages between the two users (bidirectional)
       const messages = await Message.findAll({
         where: {
           [Op.or]: [
-            { sender_id: authenticatedUserId, receiver_id: contactId },
-            { sender_id: contactId, receiver_id: authenticatedUserId },
+            { sender_id: authenticatedUserId, receiver_id: contactId }, // Messages sent by auth user
+            { sender_id: contactId, receiver_id: authenticatedUserId }, // Messages received by auth user
           ],
         },
-        order: [["sending_date", "ASC"]],
+        order: [["sending_date", "ASC"]], // Sort chronologically
       });
 
       res.status(200).json(messages);

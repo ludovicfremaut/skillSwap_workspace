@@ -1,3 +1,33 @@
+/**
+ * COMPOSANT HEADER PRINCIPAL
+ * 
+ * Ce composant constitue l'en-tête principal de l'application SkillSwap.
+ * Il gère la navigation, l'authentification utilisateur, et l'affichage
+ * adaptatif selon l'état de connexion de l'utilisateur.
+ * 
+ * Fonctionnalités principales :
+ * - Affichage du logo et du titre de l'application
+ * - Navigation responsive (desktop/mobile avec menu burger)
+ * - Gestion de l'état d'authentification utilisateur
+ * - Menu dynamique selon l'état de connexion
+ * - Boutons de navigation vers les pages principales
+ * - Fonction de déconnexion
+ * 
+ * États gérés :
+ * - Menu mobile ouvert/fermé
+ * - Données de l'utilisateur connecté
+ * - État d'authentification global
+ * 
+ * Navigation disponible :
+ * - Recherche (toujours accessible)
+ * - Mon profil (utilisateur connecté)
+ * - Connexion/Inscription (utilisateur non connecté)
+ * - Déconnexion (utilisateur connecté)
+ * 
+ * @author Équipe SkillSwap
+ * @version 1.0.0
+ */
+
 import { useEffect, useState } from "react";
 import { Button } from "./ui/Button";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,11 +37,16 @@ import { getCurrentUser } from "@/services/user.service";
 import type { IUser } from "@/types/user";
 
 export default function Header() {
+  // State for mobile menu toggle
   const [open, setOpen] = useState(false);
+  // State for authenticated user data
   const [authUser, setAuthUser] = useState<IUser | null>(null);
+  
+  // Hooks for navigation and authentication
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
 
+  // Fetch current user data on component mount
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -26,11 +61,12 @@ export default function Header() {
     fetchUser();
   }, []);
 
+  // Handle user logout
   const handleLogout = async () => {
     try {
       await logout();
-      setOpen(false);
-      navigate("/");
+      setOpen(false); // Close mobile menu
+      navigate("/"); // Redirect to homepage
     } catch (error) {
       console.error("Erreur lors de la déconnexion:", error);
     }

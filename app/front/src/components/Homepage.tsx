@@ -1,3 +1,37 @@
+/**
+ * COMPOSANT PAGE D'ACCUEIL PRINCIPALE
+ * 
+ * Ce composant constitue le cœur de la page d'accueil de l'application SkillSwap.
+ * Il présente l'application aux visiteurs et fournit les fonctionnalités principales
+ * de découverte et de recherche d'utilisateurs et de compétences.
+ * 
+ * Fonctionnalités affichées :
+ * - Présentation du concept SkillSwap avec slogan motivant
+ * - Formulaire de recherche par compétence et localisation
+ * - Affichage aléatoire de profils utilisateurs pour la découverte
+ * - Visualisation des compétences disponibles sur la plateforme
+ * - Appel à l'action pour encourager l'inscription
+ * - Mise en avant des derniers membres inscrits
+ * 
+ * Design responsive :
+ * - Version mobile : disposition verticale avec carousel d'images
+ * - Version desktop : grille 3 colonnes pour une présentation optimisée
+ * - Adaptation automatique selon la taille d'écran
+ * 
+ * Logique de recherche :
+ * - Filtrage en temps réel par compétences
+ * - Filtrage optionnel par code postal
+ * - Redirection vers page de résultats avec données filtrées
+ * 
+ * États gérés :
+ * - Chargement des données utilisateurs
+ * - Gestion des erreurs d'API
+ * - Mélange aléatoire des profils affichés
+ * 
+ * @author Équipe SkillSwap
+ * @version 1.0.0
+ */
+
 import { CarouselPlugin } from "./ui/CarouselPlugin";
 import SearchForm from "./Forms/SearchForm";
 import SkillBubble from "./ui/SkillBubble";
@@ -8,11 +42,15 @@ import { useAllUsers } from "@/hooks/useAllUsers";
 import { ProfileCard } from "./ProfileCard";
 
 export default function Homepage() {
+  // Fetch all users with custom hook
   const { users, loading, error } = useAllUsers();
   const navigate = useNavigate();
+  
+  // Create random selection of users for discovery
   const shuffled = [...users].sort(() => 0.5 - Math.random());
-  const randomUsers = shuffled.slice(0, 2);
+  const randomUsers = shuffled.slice(0, 2); // Get 2 random users for desktop
 
+  // Handle search form submission
   function handleSearch({
     skill,
     zipcode,
@@ -20,23 +58,27 @@ export default function Homepage() {
     skill: string;
     zipcode: string;
   }) {
+    // Filter users based on search criteria
     const filtered = users.filter((user) => {
+      // Check if user has the searched skill
       const hasSkill = user.skills.some((s) =>
         s.name.toLowerCase().includes(skill.toLowerCase()),
       );
 
-      // Si un code postal est fourni, on filtre aussi dessus
+      // If zipcode is provided, filter by both skill and location
       if (zipcode.trim()) {
         return hasSkill && user.zipcode === zipcode;
       }
 
-      // Sinon, on ne filtre que par compétence
+      // Otherwise, filter by skill only
       return hasSkill;
     });
 
+    // Navigate to search results page with filtered data
     navigate("/search", { state: { filteredUsers: filtered } });
   }
 
+  // Loading state
   if (loading) {
     return (
       <p className="text-white text-sm italic text-center mt-10">
@@ -45,6 +87,7 @@ export default function Homepage() {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <p className="text-red-500 text-sm italic text-center mt-10">
