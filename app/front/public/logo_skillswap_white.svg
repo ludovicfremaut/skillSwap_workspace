@@ -1,0 +1,27 @@
+          <svg className="w18 h-18" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+//           <line x1="80" y1="20" x2="120" y2="40" stroke="white" stroke-width="1.5"></line>
+//           <line x1="80" y1="20" x2="120" y2="80" stroke="white" stroke-width="1.5"></line>
+//           <line x1="80" y1="20" x2="80" y2="100" stroke="white" stroke-width="1.5"></line>
+//           <line x1="80" y1="20" x2="40" y2="80" stroke="white" stroke-width="1.5"></line>
+//           <line x1="80" y1="20" x2="40" y2="40" stroke="white" stroke-width="1.5"></line>
+
+//           <line x1="120" y1="40" x2="120" y2="80" stroke="white" stroke-width="1.5"></line>
+//           <line x1="120" y1="40" x2="80" y2="100" stroke="white" stroke-width="1.5"></line>
+//           <line x1="120" y1="40" x2="40" y2="80" stroke="white" stroke-width="1.5"></line>
+//           <line x1="120" y1="40" x2="40" y2="40" stroke="white" stroke-width="1.5"></line>
+
+//           <line x1="120" y1="80" x2="80" y2="100" stroke="white" stroke-width="1.5"></line>
+//           <line x1="120" y1="80" x2="40" y2="80" stroke="white" stroke-width="1.5"></line>
+//           <line x1="120" y1="80" x2="40" y2="40" stroke="white" stroke-width="1.5"></line>
+
+//           <line x1="80" y1="100" x2="40" y2="80" stroke="white" stroke-width="1.5"></line>
+//           <line x1="80" y1="100" x2="40" y2="40" stroke="white" stroke-width="1.5"></line>
+//           <line x1="40" y1="80" x2="40" y2="40" stroke="white" stroke-width="1.5"></line>
+
+//           <circle cx="80" cy="20" r="7" fill="white"></circle>
+//           <circle cx="120" cy="40" r="7" fill="white"></circle>
+//           <circle cx="120" cy="80" r="7" fill="white"></circle>
+//           <circle cx="80" cy="100" r="7" fill="white"></circle>
+//           <circle cx="40" cy="80" r="7" fill="white"></circle>
+//           <circle cx="40" cy="40" r="7" fill="white"></circle>
+//         </svg>

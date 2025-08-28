@@ -46,3 +46,9 @@ Caractères	Raisons
 ", '	Pour éviter les injections SQL ou JS
 @, #, $, *, 1 (chiffres)	Car un prénom ou une ville ne devrait pas contenir ça
 /, \, =	Caractères de programmation ou d’injection
+
+### Résumé rapide de la logique :
+
+Si on est sur /personalpage → on affiche le profil connecté + ses services
+Si on est sur /servicepage/:id → on affiche le profil de l'utilisateur dont l’ID est passé dans l’URL + ses services à lui
+Bouton de déconnexion → supprime le token et redirige

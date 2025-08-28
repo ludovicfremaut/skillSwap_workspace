@@ -1,10 +1,14 @@
-// src/types/user.ts
-export interface User {
+export interface IUser {
   id: number;
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
-  photo?: string | null;
-  skills: string[];
+  profile_picture: string;
+  skills: { name: string; id: number }[];
   availability: string;
-  bio: string;
+  description: string;
+  zipcode: string;
+  city: string;
+  sender_id: number;
+  receiver_id: number;
 }

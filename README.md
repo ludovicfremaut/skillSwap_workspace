@@ -1,1 +1,0 @@
-# skillSwap_workspace monorepo

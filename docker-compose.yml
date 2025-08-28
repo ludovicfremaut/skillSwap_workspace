@@ -1,0 +1,62 @@
+# Je déclare mes trois services : Postgres, Backend et Frontend
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: skillswap-db
+    restart: always
+    env_file:
+      - ./app/back/.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./app/back
+    container_name: skillswap-back
+    restart: always
+    env_file:
+      - ./app/back/.env
+    environment:
+      PG_URL: postgres://skillswap:skillswap@db:5432/skillswap
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app/back:/src
+      - /src/node_modules
+    working_dir: /src
+    command: sh -c "npm run db:reset && npm run dev"
+
+  frontend:
+    build:
+      context: ./app/front
+    container_name: skillswap-front
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: /api
+    volumes:
+      - ./app/front:/src
+      - /src/node_modules
+    working_dir: /src
+    command: npm run dev -- --host 0.0.0.0 --port 5173
+
+networks:
+  default:
+    name: skillswap_net
+
+volumes:
+  db_data:
