@@ -8,21 +8,21 @@
 
 > **Plateforme collaborative d'échange de compétences entre particuliers**
 
-## 📋 Présentation du projet
+## Présentation du projet
 
 SkillSwap permet aux utilisateurs d'échanger leurs compétences de manière gratuite et conviviale. 
 **Objectif :** Créer des liens authentiques autour de l'apprentissage et du partage de savoir-faire.
 
-## ⚡ Fonctionnalités principales
+## Fonctionnalités principales
 
-- ✅ **Authentification sécurisée** (JWT + hashage Argon2)
-- ✅ **Gestion des profils** avec compétences personnalisées  
-- ✅ **Recherche et filtres** par compétence et localisation
-- ✅ **Catalogue des services** avec système CRUD complet
-- ✅ **Messagerie interne** sécurisée entre utilisateurs
-- ✅ **Interface responsive** adaptée mobile/desktop
+- **Authentification sécurisée** (JWT + hashage Argon2)
+- **Gestion des profils** avec compétences personnalisées  
+- **Recherche et filtres** par compétence et localisation
+- **Catalogue des services** avec système CRUD complet
+- **Messagerie interne** sécurisée entre utilisateurs
+- **Interface responsive** adaptée mobile/desktop
 
-## 🛠️ Technologies utilisées
+## Technologies utilisées
 
 ### Backend
 - **Node.js** + Express.js + TypeScript
@@ -38,7 +38,7 @@ SkillSwap permet aux utilisateurs d'échanger leurs compétences de manière gra
 - **Docker** + Docker Compose
 - **Architecture 3-tiers** conteneurisée
 
-## 🚀 Installation et démarrage
+## Installation et démarrage
 
 ### Prérequis
 - **Docker Desktop** installé et démarré
@@ -67,7 +67,7 @@ open http://localhost:5173
 | **API Backend**     | http://localhost:3000 | API REST                          |
 | **Base de données** | localhost:5432        | PostgreSQL (avec données de test) |
 
-## 📁 Structure du projet
+## Structure du projet
 
 ```
 skillSwap_workspace/
@@ -90,33 +90,33 @@ skillSwap_workspace/
 └── README.md             # Ce fichier
 ```
 
-## 🔐 Sécurité
+## Sécurité
 
 - **Authentification JWT** avec expiration automatique
 - **Hashage des mots de passe** avec Argon2
 - **Validation stricte** des données (Joi + sanitisation)
 - **Protection CORS** et headers sécurisés (Helmet)
 
-## 🎯 Utilisation
+## Utilisation
 
 1. **S'inscrire** avec email et mot de passe
 2. **Compléter son profil** avec ses compétences
 3. **Rechercher des services** ou en proposer
 4. **Contacter** d'autres utilisateurs via messagerie
 
-### 👤 Comptes de test disponibles
+### Comptes de test disponibles
 
 Après les seeds automatiques, vous pouvez utiliser ces comptes :
 
 ```
 Email: alice@example.com    | Mot de passe: Password_alice_1
 Email: bob@example.com      | Mot de passe: Password_bob_1 
-Email: carol@example.com  | Mot de passe: Password_carol_1
+Email: carol@example.com    | Mot de passe: Password_carol_1
 ```
 
 > Ces comptes ont déjà des profils complets avec compétences et services pour tester toutes les fonctionnalités !
 
-## 👨‍💻 Équipe de développement
+## Équipe de développement
 
 **Projet réalisé dans le cadre de la formation CDA (Concepteur Développeur d'Applications)**
 
