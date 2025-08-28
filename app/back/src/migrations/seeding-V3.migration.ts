@@ -1,0 +1,636 @@
+import {
+  User,
+  Role,
+  Skill,
+  Service,
+  Review,
+  Message,
+  sequelize,
+} from "../models/associations.js";
+import argon2 from "argon2";
+
+console.log("Starting database seeding...");
+
+// * AJOUT DE RÔLES
+console.log("Adding roles...");
+const roleMember = await Role.create({ id: 10, name: "Membre" });
+const roleModerator = await Role.create({ id: 20, name: "Modérateur" });
+const roleGuest = await Role.create({ id: 30, name: "Invité" });
+const roleAdmin = await Role.create({ id: 1, name: "Admin" });
+
+// * AJOUT DE COMPÉTENCES
+console.log("Adding skills...");
+const peinture = await Skill.create({ id: 10, name: "Peinture" });
+const cuisine = await Skill.create({ id: 20, name: "Cuisine" });
+const programmation = await Skill.create({ id: 30, name: "Programmation" });
+const jardinage = await Skill.create({ id: 40, name: "Jardinage" });
+const menuiserie = await Skill.create({ id: 50, name: "Menuiserie" });
+const photographie = await Skill.create({ id: 60, name: "Photographie" });
+const couture = await Skill.create({ id: 70, name: "Couture" });
+const dessin = await Skill.create({ id: 80, name: "Dessin" });
+const mécanique = await Skill.create({ id: 90, name: "Mécanique" });
+const ébénisterie = await Skill.create({ id: 100, name: "Ébénisterie" });
+const danse = await Skill.create({ id: 110, name: "Danse" });
+const chant = await Skill.create({ id: 120, name: "Chant" });
+const écriture = await Skill.create({ id: 130, name: "Écriture" });
+const musique = await Skill.create({ id: 140, name: "Musique" });
+const coutureMachine = await Skill.create({
+  id: 150,
+  name: "Couture à la machine",
+});
+const modélisme = await Skill.create({ id: 160, name: "Modélisme" });
+const sculpture = await Skill.create({ id: 170, name: "Sculpture" });
+const origami = await Skill.create({ id: 180, name: "Origami" });
+const broderie = await Skill.create({ id: 190, name: "Broderie" });
+const maquillageArtistique = await Skill.create({
+  id: 200,
+  name: "Maquillage artistique",
+});
+
+const adminUser = await User.create({
+  id: 99,
+  email: "admin@skillswap.fr",
+  firstname: "Admin",
+  lastname: "Superviseur",
+  street: "1 Rue Admin",
+  zipcode: "75001",
+  city: "Paris",
+  password: await argon2.hash("Password_admin1"),
+  profile_picture: "https://randomuser.me/api/portraits/lego/1.jpg",
+  description: "Je suis l'admin de la plateforme.",
+  availability: "Tout le temps",
+  role_id: roleAdmin.id,
+});
+
+// * AJOUT D'UTILISATEURS
+console.log("Adding users...");
+const user1 = await User.create({
+  id: 1,
+  email: "alice@example.com",
+  firstname: "Alice",
+  lastname: "Martin",
+  street: "1 Rue de Martin",
+  zipcode: "75000",
+  city: "Paris",
+  password: await argon2.hash("Password_alice1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/adventurer/svg?seed=alice-martin",
+  description: "Je suis Alice, passionnée par la peinture.",
+  availability: "Flexible",
+  role_id: roleMember.id,
+});
+await user1.addSkill(peinture);
+
+const user2 = await User.create({
+  id: 2,
+  email: "lucas@example.com",
+  firstname: "Lucas",
+  lastname: "Dubois",
+  street: "2 Rue de Dubois",
+  zipcode: "40000",
+  city: "Lyon",
+  password: await argon2.hash("Password_lucas1"),
+  profile_picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=bob-durand",
+  description: "Je suis Lucas, passionné par la cuisine.",
+  availability: "Flexible",
+  role_id: roleModerator.id,
+});
+await user2.addSkills([cuisine, photographie, programmation]);
+
+const user3 = await User.create({
+  id: 3,
+  email: "emma@example.com",
+  firstname: "Emma",
+  lastname: "Bernard",
+  street: "3 Rue de Bernard",
+  zipcode: "13000",
+  city: "Marseille",
+  password: await argon2.hash("Password_emma1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/big-smile/svg?seed=carol-lemoine",
+  description: "Je suis Emma, passionnée par la programmation.",
+  availability: "Flexible",
+  role_id: roleGuest.id,
+});
+await user3.addSkills([programmation, menuiserie, photographie]);
+
+const user4 = await User.create({
+  id: 4,
+  email: "hugo@example.com",
+  firstname: "Hugo",
+  lastname: "Morel",
+  street: "4 Rue de Morel",
+  zipcode: "31000",
+  city: "Toulouse",
+  password: await argon2.hash("Password_hugo1"),
+  profile_picture: "https://api.dicebear.com/7.x/personas/svg?seed=emma-petit",
+  description: "Je suis Hugo, passionné par le jardinage.",
+  availability: "Flexible",
+  role_id: roleMember.id,
+});
+await user4.addSkills([jardinage, danse, couture]);
+
+const user5 = await User.create({
+  id: 5,
+  email: "chloe@example.com",
+  firstname: "Chloé",
+  lastname: "Leroy",
+  street: "5 Rue de Leroy",
+  zipcode: "06000",
+  city: "Nice",
+  password: await argon2.hash("Password_chloe1"),
+  profile_picture: "https://api.dicebear.com/7.x/personas/svg?seed=emma-petit",
+  description: "Je suis Chloé, passionnée par la peinture.",
+  availability: "Flexible",
+  role_id: roleModerator.id,
+});
+await user5.addSkills([peinture, sculpture, origami]);
+
+const user6 = await User.create({
+  id: 6,
+  email: "noah@example.com",
+  firstname: "Noah",
+  lastname: "Garcia",
+  street: "6 Rue de Garcia",
+  zipcode: "44000",
+  city: "Nantes",
+  password: await argon2.hash("Password_noah1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/adventurer/svg?seed=francois-dubois",
+  description: "Je suis Noah, passionné par la cuisine.",
+  availability: "Flexible",
+  role_id: roleGuest.id,
+});
+await user6.addSkills([cuisine, broderie, maquillageArtistique]);
+
+const user7 = await User.create({
+  id: 7,
+  email: "lea@example.com",
+  firstname: "Léa",
+  lastname: "Faure",
+  street: "7 Rue de Faure",
+  zipcode: "67000",
+  city: "Strasbourg",
+  password: await argon2.hash("Password_lea1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=gabriel-leroy",
+  description: "Je suis Léa, passionnée par la programmation.",
+  availability: "Flexible",
+  role_id: roleMember.id,
+});
+await user7.addSkills([programmation, écriture, musique]);
+
+const user8 = await User.create({
+  id: 8,
+  email: "tom@example.com",
+  firstname: "Tom",
+  lastname: "Roux",
+  street: "8 Rue de Roux",
+  zipcode: "33000",
+  city: "Bordeaux",
+  password: await argon2.hash("Password_tom1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/big-smile/svg?seed=hannah-morel",
+  description: "Je suis Tom, passionné par le jardinage.",
+  availability: "Flexible",
+  role_id: roleModerator.id,
+});
+await user8.addSkills([jardinage, mécanique, ébénisterie]);
+
+const user9 = await User.create({
+  id: 9,
+  email: "manon@example.com",
+  firstname: "Manon",
+  lastname: "Dupont",
+  street: "9 Rue de Dupont",
+  zipcode: "59000",
+  city: "Lille",
+  password: await argon2.hash("Password_manon1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/big-smile/svg?seed=hannah-morel",
+  description: "Je suis Manon, passionnée par la peinture.",
+  availability: "Flexible",
+  role_id: roleGuest.id,
+});
+await user9.addSkills([peinture, dessin, coutureMachine]);
+
+const user10 = await User.create({
+  id: 10,
+  email: "nathan@example.com",
+  firstname: "Nathan",
+  lastname: "Giraud",
+  street: "10 Rue de Giraud",
+  zipcode: "35000",
+  city: "Rennes",
+  password: await argon2.hash("Password_nathan1"),
+  profile_picture: "https://api.dicebear.com/7.x/personas/svg?seed=julia-fabre",
+  description: "Je suis Nathan, passionné par la cuisine.",
+  availability: "Flexible",
+  role_id: roleMember.id,
+});
+await user10.addSkills([cuisine, photographie, modélisme]);
+
+const user11 = await User.create({
+  id: 11,
+  email: "sarah@example.com",
+  firstname: "Sarah",
+  lastname: "Chevalier",
+  street: "11 Rue de Chevalier",
+  zipcode: "51000",
+  city: "Reims",
+  password: await argon2.hash("Password_sarah1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/adventurer/svg?seed=kevin-garnier",
+  description: "Je suis Sarah, passionnée par la programmation.",
+  availability: "Flexible",
+  role_id: roleModerator.id,
+});
+await user11.addSkills([programmation, sculpture, origami]);
+
+const user12 = await User.create({
+  id: 12,
+  email: "jules@example.com",
+  firstname: "Jules",
+  lastname: "Lambert",
+  street: "12 Rue de Lambert",
+  zipcode: "76000",
+  city: "Le Havre",
+  password: await argon2.hash("Password_jules1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=laura-bernard",
+  description: "Je suis Jules, passionné par le jardinage.",
+  availability: "Flexible",
+  role_id: roleGuest.id,
+});
+await user12.addSkills([jardinage, peinture, danse]);
+
+const user13 = await User.create({
+  id: 13,
+  email: "clara@example.com",
+  firstname: "Clara",
+  lastname: "Marchand",
+  street: "13 Rue de Marchand",
+  zipcode: "51000",
+  city: "Saint-Étienne",
+  password: await argon2.hash("Password_clara1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/big-smile/svg?seed=maxime-rousseau",
+  description: "Je suis Clara, passionnée par la peinture.",
+  availability: "Flexible",
+  role_id: roleMember.id,
+});
+await user13.addSkill(peinture);
+
+const user14 = await User.create({
+  id: 14,
+  email: "louis@example.com",
+  firstname: "Louis",
+  lastname: "Blanc",
+  street: "14 Rue de Blanc",
+  zipcode: "38000",
+  city: "Grenoble",
+  password: await argon2.hash("Password_louis1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=laura-bernard",
+  description: "Je suis Louis, passionné par la cuisine.",
+  availability: "Flexible",
+  role_id: roleModerator.id,
+});
+await user14.addSkills([cuisine, photographie, mécanique]);
+
+const user15 = await User.create({
+  id: 15,
+  email: "camille@example.com",
+  firstname: "Camille",
+  lastname: "Philippe",
+  street: "15 Rue de Philippe",
+  zipcode: "48000",
+  city: "Dijon",
+  password: await argon2.hash("Password_camille1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/personas/svg?seed=olivier-petit",
+  description: "Je suis Camille, passionnée par la programmation.",
+  availability: "Flexible",
+  role_id: roleGuest.id,
+});
+await user15.addSkill(programmation);
+
+const user16 = await User.create({
+  id: 16,
+  email: "maxime@example.com",
+  firstname: "Maxime",
+  lastname: "Barbier",
+  street: "16 Rue de Barbier",
+  zipcode: "49000",
+  city: "Angers",
+  password: await argon2.hash("Password_maxime1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/adventurer/svg?seed=pauline-lemoine",
+  description: "Je suis Maxime, passionné par le jardinage.",
+  availability: "Flexible",
+  role_id: roleMember.id,
+});
+await user16.addSkills([jardinage, photographie]);
+
+const user17 = await User.create({
+  id: 17,
+  email: "ines@example.com",
+  firstname: "Inès",
+  lastname: "Moulin",
+  street: "17 Rue de Moulin",
+  zipcode: "07000",
+  city: "Nîmes",
+  password: await argon2.hash("Password_ines1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=quentin-dumas",
+  description: "Je suis Inès, passionnée par la peinture.",
+  availability: "Flexible",
+  role_id: roleModerator.id,
+});
+await user17.addSkills([peinture, dessin, coutureMachine]);
+
+const user18 = await User.create({
+  id: 18,
+  email: "antoine@example.com",
+  firstname: "Antoine",
+  lastname: "Henry",
+  street: "18 Rue de Henry",
+  zipcode: "39000",
+  city: "Villeurbanne",
+  password: await argon2.hash("Password_antoine1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/big-smile/svg?seed=rachel-moreau",
+  description: "Je suis Antoine, passionné par la cuisine.",
+  availability: "Flexible",
+  role_id: roleGuest.id,
+});
+await user18.addSkills([cuisine, photographie, modélisme]);
+
+const user19 = await User.create({
+  id: 19,
+  email: "lola@example.com",
+  firstname: "Lola",
+  lastname: "Benoit",
+  street: "19 Rue de Benoit",
+  zipcode: "81000",
+  city: "Clermont-Ferrand",
+  password: await argon2.hash("Password_lola1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/personas/svg?seed=tania-lemoine",
+  description: "Je suis Lola, passionnée par la programmation.",
+  availability: "Flexible",
+  role_id: roleMember.id,
+});
+await user19.addSkills([programmation, sculpture, origami]);
+
+const user20 = await User.create({
+  id: 20,
+  email: "mateo@example.com",
+  firstname: "Matéo",
+  lastname: "Gomez",
+  street: "20 Rue de Gomez",
+  zipcode: "79000",
+  city: "Rouen",
+  password: await argon2.hash("Password_mateo1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/personas/svg?seed=tania-lemoine",
+  description: "Je suis Matéo, passionné par le jardinage.",
+  availability: "Flexible",
+  role_id: roleModerator.id,
+});
+await user20.addSkills([jardinage, photographie, mécanique]);
+
+const user21 = await User.create({
+  id: 21,
+  email: "anna@example.com",
+  firstname: "Anna",
+  lastname: "Renard",
+  street: "21 Rue de Renard",
+  zipcode: "14000",
+  city: "Avignon",
+  password: await argon2.hash("Password_anna1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/adventurer/svg?seed=ulrich-germain",
+  description: "Je suis Anna, passionnée par la peinture.",
+  availability: "Flexible",
+  role_id: roleGuest.id,
+});
+await user21.addSkills([peinture, dessin, coutureMachine]);
+
+const user22 = await User.create({
+  id: 22,
+  email: "enzo@example.com",
+  firstname: "Enzo",
+  lastname: "Schmitt",
+  street: "22 Rue de Schmitt",
+  zipcode: "14000",
+  city: "Caen",
+  password: await argon2.hash("Password_enzo1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=valerie-carpentier",
+  description: "Je suis Enzo, passionné par la cuisine.",
+  availability: "Flexible",
+  role_id: roleMember.id,
+});
+await user22.addSkill(cuisine);
+
+const user23 = await User.create({
+  id: 23,
+  email: "eva@example.com",
+  firstname: "Eva",
+  lastname: "Meunier",
+  street: "23 Rue de Meunier",
+  zipcode: "68000",
+  city: "Metz",
+  password: await argon2.hash("Password_eva1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/big-smile/svg?seed=william-lemoine",
+  description: "Je suis Eva, passionnée par la programmation.",
+  availability: "Flexible",
+  role_id: roleModerator.id,
+});
+await user23.addSkills([programmation, ébénisterie]);
+
+const user24 = await User.create({
+  id: 24,
+  email: "lena@example.com",
+  firstname: "Léna",
+  lastname: "Baron",
+  street: "24 Rue de Baron",
+  zipcode: "37000",
+  city: "Tours",
+  password: await argon2.hash("Password_lena1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/personas/svg?seed=xavier-martin",
+  description: "Je suis Léna, passionnée par le jardinage.",
+  availability: "Flexible",
+  role_id: roleGuest.id,
+});
+await user24.addSkills([jardinage, photographie, modélisme]);
+
+const user25 = await User.create({
+  id: 25,
+  email: "theo@example.com",
+  firstname: "Théo",
+  lastname: "Carpentier",
+  street: "25 Rue de Carpentier",
+  zipcode: "42000",
+  city: "Amiens",
+  password: await argon2.hash("Password_theo1"),
+  profile_picture:
+    "https://api.dicebear.com/7.x/personas/svg?seed=yasmine-roux",
+  description: "Je suis Théo, passionné par la peinture.",
+  availability: "Flexible",
+  role_id: roleMember.id,
+});
+await user25.addSkills([peinture, dessin, coutureMachine]);
+
+console.log("Adding services...");
+const service1 = await Service.create({
+  id: 30,
+  object: "Besoin d'aide pour coder une application",
+  status: "accepted",
+  date: new Date(),
+  sender_id: user19.id, // Lola
+  receiver_id: user15.id, // Camille
+});
+
+const service2 = await Service.create({
+  id: 31,
+  object: "Peux-tu m’aider à jardiner samedi ?",
+  status: "pending",
+  sender_id: user24.id, // Léna
+  receiver_id: user20.id, // Maxime
+});
+
+const service3 = await Service.create({
+  id: 32,
+  object: "Cours de cuisine végétarienne ?",
+  status: "completed",
+  sender_id: user22.id, // Enzo
+  receiver_id: user14.id, // Louis
+});
+
+const service4 = await Service.create({
+  id: 33,
+  object: "Peinture murale pour chambre enfant",
+  status: "pending",
+  sender_id: user25.id, // Théo
+  receiver_id: user21.id, // Anna
+});
+
+const service5 = await Service.create({
+  id: 34,
+  object: "Aide en photographie",
+  status: "pending",
+  date: new Date(),
+  sender_id: user10.id, // Nathan = donneur
+  receiver_id: user7.id, // Léa
+});
+
+const service6 = await Service.create({
+  id: 35,
+  object: "Besoin d'aide en jardinage",
+  status: "accepted",
+  date: new Date(),
+  sender_id: user6.id, // Noah
+  receiver_id: user10.id, // Nathan = receveur
+});
+
+const service7 = await Service.create({
+  id: 36,
+  object: "Cours de programmation pour débutant",
+  status: "completed",
+  date: new Date(),
+  sender_id: user10.id, // Nathan
+  receiver_id: user8.id, // Tom
+});
+
+const service8 = await Service.create({
+  id: 37,
+  object: "Besoin de conseils en photo",
+  status: "accepted",
+  date: new Date(),
+  sender_id: user9.id, // Manon
+  receiver_id: user10.id, // Nathan
+});
+
+const service9 = await Service.create({
+  id: 38,
+  object: "Apprendre à coudre à la machine",
+  status: "pending",
+  date: new Date(),
+  sender_id: user10.id, // Nathan
+  receiver_id: user12.id, // Jules
+});
+
+console.log("Adding reviews...");
+const review1 = await Review.create({
+  id: 30,
+  rating: 5,
+  comment: "Camille est super pédagogue en développement !",
+  service_id: service1.id,
+  user_id: user19.id, // Lola
+});
+
+const review2 = await Review.create({
+  id: 31,
+  rating: 4,
+  comment: "Très bon moment à jardiner ensemble.",
+  service_id: service2.id,
+  user_id: user24.id, // Léna
+});
+
+const review3 = await Review.create({
+  id: 32,
+  rating: 5,
+  comment: "J'ai appris plein de recettes, merci Louis !",
+  service_id: service3.id,
+  user_id: user22.id, // Enzo
+});
+
+console.log("Adding messages...");
+await Message.create({
+  id: 30,
+  body: "Salut Camille, tu pourrais m'aider avec React ?",
+  sender_id: user19.id,
+  receiver_id: user15.id,
+});
+
+await Message.create({
+  id: 31,
+  body: "Hello Maxime, disponible samedi pour le jardin ?",
+  sender_id: user24.id,
+  receiver_id: user20.id,
+});
+
+await Message.create({
+  id: 32,
+  body: "Enzo, rdv demain pour le cours de cuisine !",
+  sender_id: user14.id,
+  receiver_id: user22.id,
+});
+
+await Message.create({
+  id: 33,
+  body: "Désolée Théo, je suis déjà prise ce jour-là.",
+  sender_id: user21.id,
+  receiver_id: user25.id,
+});
+console.log("Syncing PostgreSQL sequences...");
+
+await sequelize.query(`
+  SELECT setval(pg_get_serial_sequence('"user"', 'id'), (SELECT MAX(id) FROM "user"));
+`);
+await sequelize.query(`
+  SELECT setval(pg_get_serial_sequence('service', 'id'), (SELECT MAX(id) FROM service));
+`);
+await sequelize.query(`
+  SELECT setval(pg_get_serial_sequence('review', 'id'), (SELECT MAX(id) FROM review));
+`);
+await sequelize.query(`
+  SELECT setval(pg_get_serial_sequence('message', 'id'), (SELECT MAX(id) FROM message));
+`);
+
+console.log("Seeding done! Closing connection...");
+await sequelize.close();
